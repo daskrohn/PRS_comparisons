@@ -31,6 +31,29 @@ dev.off()
 ```
 ![RBD FDR AUC](TEST_AUC_RBD-FDR_cont.png)
 
+### Quartile analysis
+```R
+RBD_FDR$quartile <- with(RBD_FDR, cut(SCORE, 
+                                breaks=quantile(SCORE, probs=seq(0,1, by=0.25), na.rm=TRUE), 
+                                include.lowest=TRUE, labels = 1:4))
+
+RBD_FDR$PHENO_BI = RBD_FDR$PHENO-1
+
+fit_quar <- glm(RBD_FDR$PHENO_BI ~ as.factor(RBD_FDR$quartile), family = "binomial")
+summary(fit_quar) # this is ok for now, but need to add covariates and put results into a table. 
+
+png("RBD-FDR_PRS_Quartiles.png", width = 5.5, height = 4, units = "in", res = 300)
+
+q = ggplot(RBD_FDR, aes(x=RBD_FDR$quartile, y=RBD_FDR$SCORE)) 
+q2 = q + geom_boxplot(aes(fill = as.factor(RBD_FDR$PHENO)), position = position_dodge(0.9)) +
+  scale_fill_manual(values = c("#00AFBB", "#E7B800"), name = "Phenotype", labels = c("Control", "Case"))
+q3 = q2 + ggtitle("RBD PRS: Quartiles") + xlab("Quartile") + ylab("Score") + theme(plot.title = element_text(hjust = 0.5))
+q3
+
+dev.off()
+````
+![RBD-FDR Quartile Plot](RBD-FDR_PRS_Quartiles.png)
+
 
 ## Testing genetically correlated conditions 
 ```R
