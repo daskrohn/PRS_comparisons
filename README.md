@@ -54,6 +54,76 @@ dev.off()
 ````
 ![RBD-FDR Quartile Plot](RBD-FDR_PRS_Quartiles.png)
 
+## Comparing PD +/- RBD
+**Testing both the RBD and PD PRS.**  
+PD PRS is calculated using the GWAS significant variants from the latest PD GWAS (Nalls et. al. 2019)  
+
+**PD PRS:**
+```R
+PDwRBD_PD = fread("PDwRBD_meta5.profile", header = T)
+PDnoRBD = fread("PDnoRBD_meta5.profile", header = T)
+
+PDwRBD_PD = subset(PDwRBD_PD, PHENO != -9)
+PDnoRBD_PD = subset(PDnoRBD_PD, PHENO != -9)
+
+count = subset(PDwRBD_PD, PHENO == 2)
+nrow(count) # 285
+count = subset(PDnoRBD_PD, PHENO == 2)
+nrow(count) # 217
+count = subset(PDwRBD_PD, PHENO == 1)
+nrow(count) # 902 controls 
+
+rocAuc <- roc(PDwRBD_PD$PHENO, PDwRBD_PD$SCORE)
+auc(rocAuc) # 0.6648
+ci(rocAuc, of="auc") # 95% CI: 0.6295-0.7001 (DeLong)
+coords(rocAuc, "best") # threshold: -0.01 # specificity 0.59 # sensitivity 0.67
+
+rocAuc <- roc(PDnoRBD_PD$PHENO, PDnoRBD_PD$SCORE)
+auc(rocAuc) # 0.6679
+ci(rocAuc, of="auc") # 95% CI: 0.628-0.7078 (DeLong)
+coords(rocAuc, "best") # threshold: -0.01 # specificity: 0.49 # sensitivity: 0.78
+
+png("PDandRBD_meta5_PRS.png", width = 5.5, height = 4, units = "in", res = 300)
+
+rocobj <- plot.roc(PDwRBD$PHENO, PDwRBD$SCORE,  main="ROC curve PD +/- RBD vs Controls: PD risk profile",
+                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkred")
+
+rocobj <- plot.roc(PDnoRBD$PHENO, PDnoRBD$SCORE,
+                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkblue", print.auc.y = .4, add = TRUE)
+
+dev.off()
+```
+
+**RBD PRS**
+```R
+PDwRBD_RBD = fread("PDwRBD_rbd-fdr.profile", header = T)
+PDnoRBD_RBD = fread("PDnoRBD_rbd-fdr.profile", header = T)
+
+PDwRBD_RBD = subset(PDwRBD_RBD, PHENO != -9)
+PDnoRBD_RBD = subset(PDnoRBD_RBD, PHENO != -9)
+
+# PD+RBD
+rocAuc <- roc(PDwRBD_RBD$PHENO, PDwRBD_RBD$SCORE)
+auc(rocAuc) # 0.5969
+ci(rocAuc, of="auc") # 95% CI: 0.5597-0.6341 (DeLong)
+coords(rocAuc, "best") # threshold: 0.0008 # specificity 0.55 # sensitivity: 0.60
+
+# PD-RBD
+rocAuc <- roc(PDnoRBD_RBD$PHENO, PDnoRBD_RBD$SCORE)
+auc(rocAuc) # 0.5475
+ci(rocAuc, of="auc") # 95% CI: 0.5048-0.5903 (DeLong)
+coords(rocAuc, "best") # threshold: 0.0004375 # specificity: 0.53 # sensitivity: 0.54
+
+png("PDandRBD_RBD-FDR_PRS.png", width = 5.5, height = 4, units = "in", res = 300)
+
+rocobj <- plot.roc(PDwRBD_RBD$PHENO, PDwRBD_RBD$SCORE,  main="ROC curve: PD +/- RBD vs controls: RBD Profile",
+                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkred")
+
+rocobj <- plot.roc(PDnoRBD_RBD$PHENO, PDnoRBD_RBD$SCORE,
+                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkblue", print.auc.y = .4, add = TRUE)
+
+dev.off()
+
 
 ## Testing genetically correlated conditions 
 ```R
