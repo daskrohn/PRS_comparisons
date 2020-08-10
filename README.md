@@ -128,7 +128,7 @@ dev.off()
 ![PD+/- RBD: RBD PRS](PDandRBD_RBD-FDR_PRS.png)
 
 ### Replication in Swedish Cohort
-PD PRS: 
+**PD PRS:** 
 
 ```R
 Swe_PDwRBD_PD <- fread("PDwRBD_PD_PRS_Rsq03_KajsaBrolin.profile", header = T)
@@ -156,7 +156,7 @@ rocobj <- plot.roc(Swe_PDnoRBD_PD$PHENO, Swe_PDnoRBD_PD$SCORE,
 dev.off()
 ````
 
-RBD PRS:
+**RBD PRS:**
 ```R
 Swe_PDwRBD_RBD <- fread("PDwRBD_RBD_PRS_Rsq03_KajsaBrolin.profile", header = T)
 
