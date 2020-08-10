@@ -93,6 +93,7 @@ rocobj <- plot.roc(PDnoRBD$PHENO, PDnoRBD$SCORE,
 
 dev.off()
 ```
+![PD+/- RBD: PD PRS](PDandRBD_meta5_PRS.png)
 
 **RBD PRS**
 ```R
@@ -124,7 +125,7 @@ rocobj <- plot.roc(PDnoRBD_RBD$PHENO, PDnoRBD_RBD$SCORE,
 
 dev.off()
 ```
-
+![PD+/- RBD: RBD PRS](PDandRBD_RBD-FDR_PRS.png)
 
 ## Testing genetically correlated conditions 
 ```R
