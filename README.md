@@ -123,6 +123,7 @@ rocobj <- plot.roc(PDnoRBD_RBD$PHENO, PDnoRBD_RBD$SCORE,
                    percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkblue", print.auc.y = .4, add = TRUE)
 
 dev.off()
+```
 
 
 ## Testing genetically correlated conditions 
