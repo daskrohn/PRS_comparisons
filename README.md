@@ -53,3 +53,4 @@ rocobj <- plot(roc(DIAB2$PHENOT, DIAB2$SCORE), print.auc = F,
 
 dev.off()
 ```
+![ROC Results](TEST_AUC_RBD_cont.png)
