@@ -29,7 +29,7 @@ plot(ciobj, type="shape", col="gray90")
 
 dev.off()
 ```
-
+![RBD FDR AUC](TEST_AUC_RBD-FDR_cont.png)
 
 
 ## Testing genetically correlated conditions 
