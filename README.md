@@ -147,15 +147,15 @@ coords(rocAuc, "best") # threshold: -0.009 # specificity: 0.78 # sensitivity: 0.
 
 png("Swedish_PDandRBD_meta5_PRS.png", width = 5.5, height = 4, units = "in", res = 300)
 
-rocobj <- plot.roc(Swe_PDwRBD_PD$PHENO, Swe_PDwRBD_PD$SCORE,  main="ROC curve: PD +/- RBD vs controls: RBD Profile",
-                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkred")
+rocobj <- plot.roc(Swe_PDwRBD_PD$PHENO, Swe_PDwRBD_PD$SCORE,  main="ROC curve: Swedish PD +/- RBD vs controls: RBD Profile",
+                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "tomato2")
 
 rocobj <- plot.roc(Swe_PDnoRBD_PD$PHENO, Swe_PDnoRBD_PD$SCORE,
-                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkblue", print.auc.y = .4, add = TRUE)
+                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "lightsteelblue4", print.auc.y = .4, add = TRUE)
 
 dev.off()
 ````
-
+![Swedish PD](Swedish_PDandRBD_meta5_PRS.png)
 **RBD PRS:**
 ```R
 Swe_PDwRBD_RBD <- fread("PDwRBD_RBD_PRS_Rsq03_KajsaBrolin.profile", header = T)
@@ -174,16 +174,16 @@ coords(rocAuc, "best") # threshold: 0.012 # specificity: 0.85 # sensitivity: 0.2
 
 png("Swedish_PDandRBD_RBD-FDR_PRS.png", width = 5.5, height = 4, units = "in", res = 300)
 
-rocobj <- plot.roc(Swe_PDwRBD_RBD$PHENO, Swe_PDwRBD_RBD$SCORE,  main="ROC curve: PD +/- RBD vs controls: RBD Profile",
-                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkred")
+rocobj <- plot.roc(Swe_PDwRBD_RBD$PHENO, Swe_PDwRBD_RBD$SCORE,  main="ROC curve: Swedish PD +/- RBD vs controls: RBD Profile",
+                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "tomato2")
 
 rocobj <- plot.roc(Swe_PDnoRBD_RBD$PHENO, Swe_PDnoRBD_RBD$SCORE,
-                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "darkblue", print.auc.y = .4, add = TRUE)
+                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "lightsteelblue4", print.auc.y = .4, add = TRUE)
 
 dev.off()
 
 ````
-
+![Swedish RBD](Swedish_PDandRBD_RBD-FDR_PRS.png)
 
 ## Testing genetically correlated conditions 
 ```R
