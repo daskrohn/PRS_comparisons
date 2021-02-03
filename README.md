@@ -191,64 +191,6 @@ dev.off()
 ```
 ![PD+/- RBD: RBD PRS](PDandRBD_RBD-FDR_PRS.png)
 
-### Replication in Swedish Cohort
-**PD PRS:** 
-
-```R
-Swe_PDwRBD_PD <- fread("PDwRBD_PD_PRS_Rsq03_KajsaBrolin.profile", header = T)
-
-rocAuc <- roc(Swe_PDwRBD_PD$PHENO, Swe_PDwRBD_PD$SCORE)
-auc(rocAuc) # 0.66
-ci(rocAuc, of="auc") # 95% CI: 0.6287-0.6958 (DeLong)
-coords(rocAuc, "best") # threshold: -0.009 # specificity: 0.79 # sensitivity: 0.47
-
-Swe_PDnoRBD_PD <- fread("PDnoRBD_PD_PRS_Rsq03_KajsaBrolin.profile", header = T)
-
-rocAuc <- roc(Swe_PDnoRBD_PD$PHENO, Swe_PDnoRBD_PD$SCORE)
-auc(rocAuc) # 0.6702
-ci(rocAuc, of="auc") # 95% CI: 0.6412-0.6991 (DeLong)
-coords(rocAuc, "best") # threshold: -0.009 # specificity: 0.78 # sensitivity: 0.48
-
-png("Swedish_PDandRBD_meta5_PRS.png", width = 5.5, height = 4, units = "in", res = 300)
-
-rocobj <- plot.roc(Swe_PDwRBD_PD$PHENO, Swe_PDwRBD_PD$SCORE,  main="ROC curve: Swedish PD +/- RBD vs controls: RBD Profile",
-                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "tomato2")
-
-rocobj <- plot.roc(Swe_PDnoRBD_PD$PHENO, Swe_PDnoRBD_PD$SCORE,
-                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "lightsteelblue4", print.auc.y = .4, add = TRUE)
-
-dev.off()
-````
-![Swedish PD](Swedish_PDandRBD_meta5_PRS.png)
-**RBD PRS:**
-```R
-Swe_PDwRBD_RBD <- fread("PDwRBD_RBD_PRS_Rsq03_KajsaBrolin.profile", header = T)
-
-rocAuc <- roc(Swe_PDwRBD_RBD$PHENO, Swe_PDwRBD_RBD$SCORE)
-auc(rocAuc) # 0.5667
-ci(rocAuc, of="auc") # 95% CI: 0.5315-0.6019 (DeLong)
-coords(rocAuc, "best") # threshold: 0.008 # specificity: 0.70 # sensitivity: 0.41
-
-Swe_PDnoRBD_RBD <- fread("PDnoRBD_RBD_PRS_Rsq03_KajsaBrolin.profile", header = T)
-
-rocAuc <- roc(RBDt2$PHENO, RBDt2$SCORE)
-auc(rocAuc) # 0.5372
-ci(rocAuc, of="auc") # 95% CI: 0.506-0.5683 (DeLong)
-coords(rocAuc, "best") # threshold: 0.012 # specificity: 0.85 # sensitivity: 0.22
-
-png("Swedish_PDandRBD_RBD-FDR_PRS.png", width = 5.5, height = 4, units = "in", res = 300)
-
-rocobj <- plot.roc(Swe_PDwRBD_RBD$PHENO, Swe_PDwRBD_RBD$SCORE,  main="ROC curve: Swedish PD +/- RBD vs controls: RBD Profile",
-                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "tomato2")
-
-rocobj <- plot.roc(Swe_PDnoRBD_RBD$PHENO, Swe_PDnoRBD_RBD$SCORE,
-                   percent=FALSE,  ci=TRUE, print.auc=TRUE, col = "lightsteelblue4", print.auc.y = .4, add = TRUE)
-
-dev.off()
-
-````
-![Swedish RBD](Swedish_PDandRBD_RBD-FDR_PRS.png)
-
 ## Testing genetically correlated conditions 
 ```R
 
