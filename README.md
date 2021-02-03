@@ -33,22 +33,86 @@ dev.off()
 
 ### Quartile analysis
 ```R
+RBD_FDR <- subset(RBD_FDR, PHENO != -9)
+
 RBD_FDR$quartile <- with(RBD_FDR, cut(SCORE, 
                                 breaks=quantile(SCORE, probs=seq(0,1, by=0.25), na.rm=TRUE), 
                                 include.lowest=TRUE, labels = 1:4))
 
+RBD_FDR$decile <- with(RBD_FDR, cut(SCORE, 
+                                      breaks=quantile(SCORE, probs=seq(0,1, by=0.10), na.rm=TRUE), 
+                                      include.lowest=TRUE, labels = 1:10))
+
+head(RBD_FDR)
 RBD_FDR$PHENO_BI = RBD_FDR$PHENO-1
 
+require(broom)
+
 fit_quar <- glm(RBD_FDR$PHENO_BI ~ as.factor(RBD_FDR$quartile), family = "binomial")
-summary(fit_quar) # this is ok for now, but need to add covariates and put results into a table. 
+tidy_fitq = tidy(fit_quar)
+tidy_fitq$estimate
+tidy_fitq$quartile = c(NA,2,3,4)
+tidy_fitq = tidy_fitq[2:4,]
+tidy_fitq$beta.UB = tidy_fitq$estimate+1.96*tidy_fitq$std.error
+tidy_fitq$beta.LB = tidy_fitq$estimate-1.96*tidy_fitq$std.error
+tidy_fitq$pheno = "iRBD"
+
+
+# PD + RBD
+
+PDwRBD = fread("PDwRBD_rbd-fdr.profile", header = T)
+PDwRBD = subset(PDwRBD, PHENO != -9)
+PDwRBD$quartile <- with(PDwRBD, cut(SCORE, 
+                                      breaks=quantile(SCORE, probs=seq(0,1, by=0.25), na.rm=TRUE), 
+                                      include.lowest=TRUE, labels = 1:4))
+
+PDwRBD$PHENO_BI = PDwRBD$PHENO-1
+
+fit_quar2 <- glm(PDwRBD$PHENO_BI ~ as.factor(PDwRBD$quartile), family = "binomial")
+tfq2 = tidy(fit_quar2)
+tfq2$quartile = c(NA,2,3,4)
+tfq2 = tfq2[2:4,]
+tfq2$beta.UB = tfq2$estimate+1.96*tfq2$std.error
+tfq2$beta.LB = tfq2$estimate-1.96*tfq2$std.error
+tfq2$pheno = "PD+RBD"
+
+
+# PD - RBD
+PDnoRBD = fread("PDnoRBD_rbd-fdr.profile", header = T)
+
+PDnoRBD = subset(PDnoRBD, PHENO != -9)
+PDnoRBD$quartile <- with(PDnoRBD, cut(SCORE, 
+                                    breaks=quantile(SCORE, probs=seq(0,1, by=0.25), na.rm=TRUE), 
+                                    include.lowest=TRUE, labels = 1:4))
+
+PDnoRBD$PHENO_BI = PDnoRBD$PHENO-1
+
+fit_quar3 <- glm(PDnoRBD$PHENO_BI ~ as.factor(PDnoRBD$quartile), family = "binomial")
+tfq3 = tidy(fit_quar3)
+tfq3$quartile = c(NA,2,3,4)
+tfq3 = tfq3[2:4,]
+tfq3$beta.UB = tfq3$estimate+1.96*tfq3$std.error
+tfq3$beta.LB = tfq3$estimate-1.96*tfq3$std.error
+tfq3$pheno = "PD-RBD"
+
+rbd_quartile_fit = rbind(tidy_fitq, tfq2, tfq3)
+rbd_quartile_fit$Phenotype = factor(rbd_quartile_fit$pheno, levels = c("iRBD", "PD+RBD", "PD-RBD"))
+rbd_quartile_fit$OR = exp(rbd_quartile_fit$estimate)
+rbd_quartile_fit$OR.UB = exp(rbd_quartile_fit$beta.UB)
+rbd_quartile_fit$OR.LB = exp(rbd_quartile_fit$beta.LB)
 
 png("RBD-FDR_PRS_Quartiles.png", width = 5.5, height = 4, units = "in", res = 300)
 
-q = ggplot(RBD_FDR, aes(x=RBD_FDR$quartile, y=RBD_FDR$SCORE)) 
-q2 = q + geom_boxplot(aes(fill = as.factor(RBD_FDR$PHENO)), position = position_dodge(0.9)) +
-  scale_fill_manual(values = c("#00AFBB", "#E7B800"), name = "Phenotype", labels = c("Control", "Case"))
-q3 = q2 + ggtitle("RBD PRS: Quartiles") + xlab("Quartile") + ylab("Score") + theme(plot.title = element_text(hjust = 0.5))
-q3
+x = ggplot(rbd_quartile_fit, aes(x=as.factor(quartile), y=exp(estimate), group=Phenotype, color=Phenotype)) + 
+  geom_point(size=3, position = position_dodge(0.2)) + 
+  geom_errorbar(aes(ymin=(exp(rbd_quartile_fit$beta.LB))), 
+                ymax=(exp(rbd_quartile_fit$beta.UB)), width=0.1, 
+                position=position_dodge(0.2)) 
+
+ 
+x + labs(title = "Risk for disease by RBD PRS Quartile", x="RBD PRS Quartile", y="Odds ratio & 95% CI") +
+  theme_bw() + scale_color_manual(values=c('red4', '#999999', 'darkblue')) + ylim(0.8,5.5) + 
+  theme(plot.title = element_text(hjust = 0.5, face = "bold"))
 
 dev.off()
 ````
